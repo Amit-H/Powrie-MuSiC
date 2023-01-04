@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.01
+## Version 0.02
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -78,7 +78,7 @@ library(argparse)
 #' @return A counts table
 convert_to_counts <- function(transcript_mapping_file, input_directory) {
   tx2gene <- read.csv(transcript_mapping_file, header=TRUE, stringsAsFactors=FALSE, sep="\t")
-  currwd(getwd())
+  currwd <- getwd()
   setwd(input_directory)
   files <- list.files()[grep("*abundance.tsv", list.files())]
   names(files) <- gsub("_abundance.tsv", "", files)
@@ -167,30 +167,29 @@ estimate_cell_type_proportions <- function(bulk.mtx, sc.sce) {
 
 ## Input Validation
 
-rds_type <- function(string) {
-  if (!grepl("\\.RDS$", string)) {
-    stop(paste0(string, " is not an RDS file"), call.=FALSE)
-  }
-  return(string)
-}
-
-# Define a custom input type for directories
-dir_type <- function(string) {
-  if (!dir.exists(string)) {
-    stop(paste0(string, " is not a directory"), call.=FALSE)
-  }
-  return(string)
-}
+#rds_type <- function(string) {
+#  if (!grepl("\\.RDS$", string)) {
+#    stop(paste0(string, " is not an RDS file"), call.=FALSE)
+#  }
+#  return(string)
+#}
+#
+#dir_type <- function(string) {
+#  if (!dir.exists(string)) {
+#    stop(paste0(string, " is not a directory"), call.=FALSE)
+#  }
+#  return(string)
+#}
 
 ####################### Pipeline #######################
 
 # Parse command line arguments
 arg_parser <- ArgumentParser()
-arg_parser$add_argument("-s", "--sce", dest="sce_file", type=rds_type,
+arg_parser$add_argument("-s", "--sce", dest="sce_file",
                         required=TRUE,
                         help="path to the Single Cell Expression Object within the Powrie Album")
 
-arg_parser$add_argument("-b", "--bulk", dest="bulk_dir", type=dir_type,
+arg_parser$add_argument("-b", "--bulk", dest="bulk_dir",
                         required=TRUE,
                         help="path to the directory containing the bulk Kalisto outputs")
 
@@ -200,7 +199,7 @@ arguments <- arg_parser$parse_args()
 sce <- readSCE(arguments$sce_file)
 
 # Convert the kalisto output to a bulk mtx object
-convert_to_counts("/well/powrie/shared/kelsey_deconv/transcripts2genes.tsv",
+counts <- convert_to_counts("/well/powrie/shared/kelsey_deconv/transcripts2genes.tsv",
                   arguments$bulk_dir)
 
 counts <- aggregate_counts_by_gene_name(counts)
