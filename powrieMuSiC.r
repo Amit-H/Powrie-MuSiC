@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.04
+## Version 0.05
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -53,6 +53,10 @@ if (!require("argparse", quietly = TRUE)) {
   install.packages("argparse")
 }
 
+if (!require("here", quietly = TRUE)) {
+  install.packages("here")
+}
+
 ## Loading in the required packages
 library(SingleCellExperiment)
 library(tximport)
@@ -60,7 +64,7 @@ library(biomaRt)
 library(Biobase)
 library(MuSiC)
 library(argparse)
-
+library(here)
 
 ####################### Utility Functions #######################
 
