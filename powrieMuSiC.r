@@ -85,7 +85,7 @@ ens_species_handler <- function(species){
   } else {
     stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
   }
-  return(list(ensembl_dataset))
+  return((ensembl_dataset)
 }
 
 #' t2g_species_handler - Returns the t2g file path for a given species
@@ -103,7 +103,7 @@ t2g_species_handler <- function(species){
   } else {
     stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
   }
-  return(list(t2g_path))
+  return(t2g_path)
 }
 
 ## Bulk RNA Seq
