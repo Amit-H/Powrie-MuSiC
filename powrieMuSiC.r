@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.12
+## Version 0.13
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -97,9 +97,9 @@ ens_species_handler <- function(species){
 #' t2g_species_handler('human')
 t2g_species_handler <- function(species){
   if(species == 'mouse'){
-    t2g_path <- t2g_path <- str(file.path(here::here(), "data/t2g", "mouse_t2g.tsv"))
+    t2g_path <- t2g_path <- as.character(file.path(here::here(), "data/t2g", "mouse_t2g.tsv"))
   } else if(species == 'human'){
-    t2g_path <- t2g_path <- str(file.path(here::here(), "data", "human_t2g.tsv"))
+    t2g_path <- t2g_path <- as.character(file.path(here::here(), "data/t2g", "human_t2g.tsv"))
   } else {
     stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
   }
@@ -118,7 +118,7 @@ t2g_species_handler <- function(species){
 #' @param input_directory Path to the input directory containing the input files.
 #' @return A counts table
 convert_to_counts <- function(transcript_mapping_file, input_directory) {
-  tx2gene <- read.csv(str(transcript_mapping_file), header=TRUE, stringsAsFactors=FALSE, sep="\t")
+  tx2gene <- read.csv(transcript_mapping_file, header=TRUE, stringsAsFactors=FALSE, sep="\t")
   currwd <- getwd()
   setwd(input_directory)
   files <- list.files()[grep("*abundance.tsv", list.files())]
