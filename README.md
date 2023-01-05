@@ -12,3 +12,9 @@ To run the script: `Rscript powrieMuSiC.r -s SINGLE_CELL_EXPERIMENT_OBJECT -b BU
 2. Add Powrie Album single cell objects
 3. Add tx2gene in a data folder
 4. Allow user to specify species and gene identifiers (ensemble etc) for biomaRt
+
+## Branch structure
+
+For development purposes:
+1. main - latest working version, works fine for deployment
+2. dev - developement, for internal use, may not work as expected or at all
