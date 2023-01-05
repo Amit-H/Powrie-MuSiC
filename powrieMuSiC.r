@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.03
+## Version 0.04
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -224,7 +224,8 @@ arguments <- arg_parser$parse_args()
 
 # Detect and load the appropriate species
 
-ensembl_dataset, t2g <- species_handler(tolower(arguments$species))
+ensembl_dataset <- list(species_handler(tolower(arguments$species)))[[1]]
+t2g <- list(species_handler(tolower(arguments$species)))[[2]]
 
 # Load the single cell experiment object
 sce <- readSCE(arguments$sce_file)
