@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.05
+## Version 0.06
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -89,7 +89,7 @@ species_handler <- function(species){
   } else {
     stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
   }
-  return(ensembl_dataset, t2g)
+  return(list(ensembl_dataset, t2g))
 }
 
 ## Bulk RNA Seq
