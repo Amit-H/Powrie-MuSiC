@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.13
+## Version 0.14
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
