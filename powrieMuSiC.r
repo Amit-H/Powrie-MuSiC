@@ -70,28 +70,40 @@ library(here)
 
 ## Species handling
 
-#' Handles species-specific data for mouse or human.
-#'
-#' @param species A character string indicating the species, either "mouse" or "human".
-#' @return A list with two elements:
-#'   ensembl_dataset: A character string with the Ensembl dataset name for the species.
-#'   t2g_path: A character string with the file path to the transcript-to-gene mapping file for the species.
-#' @examples
-#' species_handler("mouse")
-#' species_handler("human")
-species_handler <- function(species){
+#' ens_species_handler - Returns the Ensembl dataset and t2g file path for a given species
+#' 
+#' @param species: str, species name, must be 'mouse' or 'human'
+#' @return: list of str, [ensembl_dataset, t2g_path]
+#' @examples: 
+#' ens_species_handler('mouse')
+#' ens_species_handler('human')
+ens_species_handler <- function(species){
   if(species == 'mouse'){
     ensembl_dataset <- 'mmusculus_gene_ensembl'
-    print('loading mouse dataset')
-    t2g_path <- t2g_path <- file.path(here::here(), "data/t2g", "mouse_t2g.tsv")
   } else if(species == 'human'){
     ensembl_dataset <- 'hsapiens_gene_ensembl'
-    print('loading human dataset')
+  } else {
+    stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
+  }
+  return(list(ensembl_dataset))
+}
+
+#' t2g_species_handler - Returns the t2g file path for a given species
+#' 
+#' @param species: str, species name, must be 'mouse' or 'human'
+#' @return: str, t2g_path
+#' @examples: 
+#' t2g_species_handler('mouse')
+#' t2g_species_handler('human')
+t2g_species_handler <- function(species){
+  if(species == 'mouse'){
+    t2g_path <- t2g_path <- file.path(here::here(), "data/t2g", "mouse_t2g.tsv")
+  } else if(species == 'human'){
     t2g_path <- t2g_path <- file.path(here::here(), "data", "human_t2g.tsv")
   } else {
     stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
   }
-  return(list(ensembl_dataset, t2g_path))
+  return(list(t2g_path))
 }
 
 ## Bulk RNA Seq
@@ -230,8 +242,8 @@ arguments <- arg_parser$parse_args()
 
 # Detect and load the appropriate species
 
-ensembl_dataset <- list(species_handler(tolower(arguments$species)))[[1]]
-t2g <- list(species_handler(tolower(arguments$species)))[[2]]
+ensembl_dataset <- ens_species_handler(tolower(arguments$species))
+t2g <- t2g_species_handler(tolower(arguments$species))
 
 # Load the single cell experiment object
 sce <- readSCE(arguments$sce_file)
