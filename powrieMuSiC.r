@@ -16,7 +16,7 @@
 ## For brevity, all functionality will be contained in this script.
 
 # Usage Instructions:
-## To run the script: Rscript powrieMuSiC.r -s SINGLE_CELL_EXPERIMENT_OBJECT -b BULK_DATA_FOLDER
+## To run the script: Rscript powrieMuSiC.r -s SINGLE_CELL_EXPERIMENT_OBJECT -b BULK_DATA_FOLDER -t SPECIES_TYPE
 
 
 ################################################################
@@ -64,6 +64,30 @@ library(argparse)
 
 ####################### Utility Functions #######################
 
+## Species handling
+
+#' Handles species-specific data for mouse or human.
+#'
+#' @param species A character string indicating the species, either "mouse" or "human".
+#' @return A list with two elements:
+#'   ensembl_dataset: A character string with the Ensembl dataset name for the species.
+#'   t2g_path: A character string with the file path to the transcript-to-gene mapping file for the species.
+#' @examples
+#' species_handler("mouse")
+#' species_handler("human")
+species_handler <- function(species){
+  if(species == 'mouse'){
+    ensembl_dataset <- 'mmusculus_gene_ensembl'
+    t2g_path <- t2g_path <- file.path(here::here(), "data/t2g", "mouse_t2g.tsv")
+  } else if(species == 'human'){
+    ensembl_dataset <- 'hsapiens_gene_ensembl'
+    t2g_path <- t2g_path <- file.path(here::here(), "data", "human_t2g.tsv")
+  } else {
+    stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
+  }
+  return(ensembl_dataset, t2g)
+}
+
 ## Bulk RNA Seq
 
 #' Convert TPMs to counts using Tximport from the output of Kalisto
@@ -74,7 +98,6 @@ library(argparse)
 #'
 #' @param transcript_mapping_file Path to the transcript mapping file.
 #' @param input_directory Path to the input directory containing the input files.
-#' @param output_directory Path to the output directory where the counts table should be written.
 #' @return A counts table
 convert_to_counts <- function(transcript_mapping_file, input_directory) {
   tx2gene <- read.csv(transcript_mapping_file, header=TRUE, stringsAsFactors=FALSE, sep="\t")
@@ -97,8 +120,8 @@ convert_to_counts <- function(transcript_mapping_file, input_directory) {
 #'
 #' @param counts A counts table.
 #' @return The aggregated counts table.
-aggregate_counts_by_gene_name <- function(counts) {
-  ensembl <- useMart('ensembl', dataset = 'mmusculus_gene_ensembl')
+aggregate_counts_by_gene_name <- function(counts, ensembl_dataset) {
+  ensembl <- useMart('ensembl', dataset = ensembl_dataset)
   attributes = c("ensembl_gene_id", "external_gene_name")
   gene_info = getBM(attributes = attributes,
                     filters = 'ensembl_gene_id', 
@@ -193,16 +216,23 @@ arg_parser$add_argument("-b", "--bulk", dest="bulk_dir",
                         required=TRUE,
                         help="path to the directory containing the bulk Kalisto outputs")
 
+arg_parser$add_argument("-t", "--type", dest="species",
+                        required=TRUE,
+                        help="specify if the data is mouse or human derived")
+
 arguments <- arg_parser$parse_args()
+
+# Detect and load the appropriate species
+
+ensembl_dataset, t2g <- species_handler(tolower(arguments$species))
 
 # Load the single cell experiment object
 sce <- readSCE(arguments$sce_file)
 
 # Convert the kalisto output to a bulk mtx object
-counts <- convert_to_counts("/well/powrie/shared/kelsey_deconv/transcripts2genes.tsv",
-                  arguments$bulk_dir)
+counts <- convert_to_counts(t2g, arguments$bulk_dir)
 
-counts <- aggregate_counts_by_gene_name(counts)
+counts <- aggregate_counts_by_gene_name(counts, ensembl_dataset)
 
 bulk.mtx <- bulkdata(counts = counts)
 
