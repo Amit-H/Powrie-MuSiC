@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.10
+## Version 0.11
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -97,9 +97,9 @@ ens_species_handler <- function(species){
 #' t2g_species_handler('human')
 t2g_species_handler <- function(species){
   if(species == 'mouse'){
-    t2g_path <- t2g_path <- file.path(here::here(), "data/t2g", "mouse_t2g.tsv")
+    t2g_path <- t2g_path <- str(file.path(here::here(), "data/t2g", "mouse_t2g.tsv"))
   } else if(species == 'human'){
-    t2g_path <- t2g_path <- file.path(here::here(), "data", "human_t2g.tsv")
+    t2g_path <- t2g_path <- str(file.path(here::here(), "data", "human_t2g.tsv"))
   } else {
     stop("Error: Invalid species. Must be mouse or human. Please open a Github issue if you require a different species!")
   }
