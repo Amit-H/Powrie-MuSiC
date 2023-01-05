@@ -6,7 +6,7 @@
 ## Date: 04-Jan-2023
 ## Licence: MIT
 ## R Version: 4.2.1
-## Version 0.09
+## Version 0.10
 
 # Description: 
 ## This tool is designed to provide a command line interface for cell type proportion estimations using the MuSiC algorithm 
@@ -118,7 +118,7 @@ t2g_species_handler <- function(species){
 #' @param input_directory Path to the input directory containing the input files.
 #' @return A counts table
 convert_to_counts <- function(transcript_mapping_file, input_directory) {
-  tx2gene <- read.csv(transcript_mapping_file, header=TRUE, stringsAsFactors=FALSE, sep="\t")
+  tx2gene <- read.csv(str(transcript_mapping_file), header=TRUE, stringsAsFactors=FALSE, sep="\t")
   currwd <- getwd()
   setwd(input_directory)
   files <- list.files()[grep("*abundance.tsv", list.files())]
