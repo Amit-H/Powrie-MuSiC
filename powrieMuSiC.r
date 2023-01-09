@@ -123,6 +123,10 @@ convert_to_counts <- function(transcript_mapping_file, input_directory) {
   setwd(input_directory)
   files <- list.files()[grep("*abundance.tsv", list.files())]
   names(files) <- gsub("_abundance.tsv", "", files)
+  has_period <- grepl("\\.", tx2gene$file)
+  if (any(!has_period)) {
+    tx2gene$TXNAME[!has_period] <- gsub("\\..*", "", tx2gene$TXNAME[!has_period])
+  }
   txi <- tximport(files, type = "kallisto", tx2gene = tx2gene, countsFromAbundance="lengthScaledTPM")
   counts <- txi$counts
   setwd(currwd)
